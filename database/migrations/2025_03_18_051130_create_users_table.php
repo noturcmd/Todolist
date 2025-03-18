@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('todolist_models', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string("task");
-            $table->string("description");
-            $table->enum("status", ["Not Done", "On Progress", "Done"])->default("Not Done");
-            $table->dateTime("deadline");
+            $table->string("name");
+            $table->string("email")->unique();
+            $table->timestamp("email_verified_at")->nullable();
+            $table->string("password");
+            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('todolist_models');
+        Schema::dropIfExists('users');
     }
 };

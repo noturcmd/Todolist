@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("task");
             $table->string("description");
-            $table->enum("status", ["Not Done", "On Progress", "Done"]);
+            $table->enum("status", ["Not Done", "Late", "Done"])->default("Not Done");
             $table->dateTime("deadline");
             $table->timestamps();
         });

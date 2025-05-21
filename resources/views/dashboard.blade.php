@@ -105,7 +105,7 @@
           <li><a href="#">📋 Dashboard</a></li>
           <li><a href="#">➕ Tambah Tugas</a></li>
           <li><a href="#">📊 Statistik</a></li>
-          <li><a href="#">👤 Profil</a></li>
+          <li><a href="{{ route('profile') }}">👤 Profil</a></li>
         </ul>
       </nav>
     </aside>

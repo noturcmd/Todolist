@@ -52,9 +52,6 @@ class AuthController extends Controller
 
         return redirect()->route('login.form')->with('success', 'Registrasi berhasil! Silakan login.');
 
-        // Auth::login($user);
-
-        // return redirect('/dashboard');
     }
 
     public function logout(Request $request)

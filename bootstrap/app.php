@@ -1,3 +1,5 @@
+bootstrap/app.php (Khusus untuk Laravel 11 ++)
+
 <?php
 
 use Illuminate\Foundation\Application;

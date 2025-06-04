@@ -28,3 +28,4 @@ Route::get('/dashboard', function () {
 Route::get('/profile', [UserController::class, 'showProfile'])->name('profile')->middleware('auth');
 Route::post('/profile/update', [UserController::class, 'update'])->name('profile.update')->middleware('auth');
 
+

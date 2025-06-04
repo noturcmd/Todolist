@@ -13,6 +13,15 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        
+        $userRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'user']);
+
+        $user = User::firstOrCreate([
+            'email' => 'user@example.com',
+        ], [
+            'name' => 'Regular User',
+            'password' => bcrypt('password'),
+        ]);
+
+        $user->assignRole($userRole);
     }
 }

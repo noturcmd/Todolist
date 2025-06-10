@@ -6,7 +6,7 @@ use App\Http\Controllers\UserController; // pastikan ini ada
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard');
 });
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');

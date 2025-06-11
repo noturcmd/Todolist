@@ -103,7 +103,7 @@
       <nav>
         <ul>
           <li><a href="#">📋 Dashboard</a></li>
-          <li><a href="#">➕ Tambah Tugas</a></li>
+          <li><a href="{{ route('todolist.create') }}">➕ Tambah Tugas</a></li>
           <li><a href="#">📊 Statistik</a></li>
           <li><a href="{{ route('profile') }}">👤 Profil</a></li>
         </ul>

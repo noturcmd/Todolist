@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController; // pastikan ini ada
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TodolistController;
 
 
 Route::get('/', function () {
@@ -23,8 +24,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // });
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware('auth');
+})->middleware('auth')->name('dashboard');
 
 Route::get('/profile', [UserController::class, 'showProfile'])->name('profile')->middleware('auth');
 Route::post('/profile/update', [UserController::class, 'update'])->name('profile.update')->middleware('auth');
 
+Route::get('/todolist/create', [TodolistController::class, 'create'])->name('todolist.create');
+Route::post('/todolist/store', [TodolistController::class, 'store'])->name('todolist.store');

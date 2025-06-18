@@ -34,3 +34,4 @@ Route::post('/profile/update', [UserController::class, 'update'])->name('profile
 
 Route::get('/todolist/create', [TodolistController::class, 'create'])->name('todolist.create');
 Route::post('/todolist/store', [TodolistController::class, 'store'])->name('todolist.store');
+

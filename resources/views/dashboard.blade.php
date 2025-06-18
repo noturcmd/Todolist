@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Tugas</title>
+
+  @foreach($tasks as $task)
+  <div class="task task-{{ $task->status }}">
+    <h3>{{ $task->judul }}</h3>
+    <p>Deadline: {{ $task->deadline }}</p>
+  </div>
+@endforeach
+
   <style>
     * {
       margin: 0;

@@ -26,6 +26,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
+Route::get('/dashboard', [TodolistController::class, 'index'])->name('dashboard')->middleware('auth');
+
+
 Route::get('/profile', [UserController::class, 'showProfile'])->name('profile')->middleware('auth');
 Route::post('/profile/update', [UserController::class, 'update'])->name('profile.update')->middleware('auth');
 

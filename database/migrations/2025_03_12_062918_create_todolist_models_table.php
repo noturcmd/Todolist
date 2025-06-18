@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('todolist_models', function (Blueprint $table) {
-            $table->id();
+            $table->user_id();
             $table->string("task");
             $table->string("description");
             $table->enum("status", ["Not Done", "Late", "Done"])->default("Not Done");

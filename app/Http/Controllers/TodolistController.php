@@ -14,16 +14,57 @@ class TodolistController extends Controller
     }
 
     // Menampilkan semua tugas di dashboard
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = TodolistModel::where('user_id', Auth::id())->get();
+        $query = TodolistModel::where('user_id', Auth::id());
 
-        $countNotDone = $tasks->where('status', 'Not Done')->count();
-        $countDone = $tasks->where('status', 'Done')->count();
-        $countLate = $tasks->where('status', 'Late')->count();
+        // Filter Status
+        if ($request->has('status') && $request->status != 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Filter Deadline
+        if ($request->has('deadline') && $request->deadline != 'all') {
+            if ($request->deadline == 'today') {
+                $query->whereDate('deadline', now()->toDateString());
+            } elseif ($request->deadline == 'week') {
+                $query->whereBetween('deadline', [now()->startOfWeek(), now()->endOfWeek()]);
+            } elseif ($request->deadline == 'month') {
+                $query->whereMonth('deadline', now()->month);
+            }
+        }
+
+        // Filter Keyword (Search by task name or description)
+        if ($request->has('keyword') && $request->keyword != '') {
+            $query->where(function ($q) use ($request) {
+                $q->where('task', 'like', '%' . $request->keyword . '%')
+                ->orWhere('description', 'like', '%' . $request->keyword . '%');
+            });
+        }
+
+        // Sort
+        if ($request->has('sort')) {
+            if ($request->sort == 'latest') {
+                $query->orderBy('created_at', 'desc');
+            } elseif ($request->sort == 'oldest') {
+                $query->orderBy('created_at', 'asc');
+            } elseif ($request->sort == 'deadline_asc') {
+                $query->orderBy('deadline', 'asc');
+            } elseif ($request->sort == 'deadline_desc') {
+                $query->orderBy('deadline', 'desc');
+            }
+        }
+
+        $tasks = $query->get();
+
+        // Chart Count (tetap jalan seperti biasa)
+        $countNotDone = TodolistModel::where('user_id', Auth::id())->where('status', 'Not Done')->count();
+        $countDone = TodolistModel::where('user_id', Auth::id())->where('status', 'Done')->count();
+        $countLate = TodolistModel::where('user_id', Auth::id())->where('status', 'Late')->count();
 
         return view('dashboard', compact('tasks', 'countNotDone', 'countDone', 'countLate'));
     }
+
 
     // Menampilkan form tambah tugas
     public function create()

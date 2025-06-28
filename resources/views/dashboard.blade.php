@@ -115,6 +115,51 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+
+    <style>
+  .status-buttons {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .status-buttons form {
+    display: inline;
+  }
+
+  .status-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .status-btn.not-done {
+    background-color: gray;
+    color: white;
+  }
+
+  .status-btn.done {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .status-btn.late {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .status-btn.active {
+    opacity: 1;
+    font-weight: bold;
+  }
+
+  .status-btn:not(.active) {
+    opacity: 0.5;
+  }
+</style>
+
   </style>
 </head>
 <body>
@@ -182,6 +227,22 @@
       <h3>{{ $task->task }}</h3>
       <p>Deadline: {{ $task->deadline }}</p>
 
+      <!-- Tombol Ganti Status -->
+<div class="status-buttons">
+  @foreach(['Not Done' => 'not-done', 'Done' => 'done', 'Late' => 'late'] as $label => $class)
+    <form method="POST" action="{{ route('todolist.updateStatus', $task->id) }}">
+      @csrf
+      @method('PATCH')
+      <input type="hidden" name="status" value="{{ $label }}">
+      <button 
+        type="submit" 
+        class="status-btn {{ $class }} {{ $task->status == $label ? 'active' : '' }}">
+        {{ $label == 'Not Done' ? 'Belum' : ($label == 'Done' ? 'Selesai' : 'Terlambat') }}
+      </button>
+    </form>
+  @endforeach
+</div>
+
       <!-- Tombol Aksi -->
       <div style="margin-top: 10px;">
         <a href="{{ route('todolist.edit', $task->id) }}" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
@@ -197,6 +258,7 @@
     </div>
   @empty
     <p>Tidak ada tugas ditemukan.</p>
+    
   @endforelse
 </section>
 

@@ -36,4 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/todolist/{id}/edit', [TodolistController::class, 'edit'])->name('todolist.edit');
     Route::put('/todolist/{id}', [TodolistController::class, 'update'])->name('todolist.update');
     Route::delete('/todolist/{id}', [TodolistController::class, 'destroy'])->name('todolist.destroy');
+
+    Route::patch('/todolist/{id}/status', [TodolistController::class, 'updateStatus'])->name('todolist.updateStatus');
+
 });

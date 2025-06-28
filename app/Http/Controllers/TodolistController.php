@@ -131,4 +131,18 @@ class TodolistController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Tugas berhasil dihapus!');
     }
+
+    public function updateStatus(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:Not Done,Done,Late'
+    ]);
+
+    $task = TodolistModel::findOrFail($id);
+    $task->status = $request->status;
+    $task->save();
+
+    return redirect()->back()->with('success', 'Status tugas berhasil diperbarui!');
+}
+
 }

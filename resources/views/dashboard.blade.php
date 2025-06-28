@@ -7,40 +7,6 @@
 
 
   <style>
-    .task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.task-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.task-actions a.btn-edit,
-.task-actions button.btn-delete {
-  display: inline-block;
-  padding: 6px 12px;
-  margin-left: 5px;
-  font-size: 14px;
-  border: none;
-  border-radius: 5px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.task-actions a.btn-edit {
-  background-color: #007bff;
-  color: white;
-}
-
-.task-actions button.btn-delete {
-  background-color: #dc3545;
-  color: white;
-}
-
     * {
       margin: 0;
       padding: 0;
@@ -129,6 +95,12 @@
     .chart-section {
       margin-top: 40px;
     }
+    .search-box {
+      padding: 5px 10px;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -150,21 +122,32 @@
     <main class="main-content">
       <header>
         <h1>📋 Dashboard Tugas</h1>
-        <div class="filters">
-          <select id="filter-status">
-            <option value="all">Semua Status</option>
-            <option value="todo">Belum Dikerjakan</option>
-            <option value="inprogress">Sedang Dikerjakan</option>
-            <option value="done">Selesai</option>
-            <option value="late">Lewat Deadline</option>
-          </select>
-          <select id="filter-time">
-            <option value="all">Semua Waktu</option>
-            <option value="today">Hari Ini</option>
-            <option value="week">1 Minggu</option>
-            <option value="month">1 Bulan</option>
-          </select>
-        </div>
+        <form method="GET" action="{{ route('dashboard') }}" id="filterForm" class="filters">
+       <select name="status" onchange="document.getElementById('filterForm').submit();">
+        <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
+        <option value="Not Done" {{ request('status') == 'Not Done' ? 'selected' : '' }}>Belum Dikerjakan</option>
+        <option value="Late" {{ request('status') == 'Late' ? 'selected' : '' }}>Lewat Deadline</option>
+        <option value="Done" {{ request('status') == 'Done' ? 'selected' : '' }}>Selesai</option>
+      </select>
+
+        <select name="deadline" onchange="document.getElementById('filterForm').submit()">
+          <option value="">Semua Waktu</option>
+          <option value="today" {{ request('deadline') == 'today' ? 'selected' : '' }}>Hari Ini</option>
+          <option value="week" {{ request('deadline') == 'week' ? 'selected' : '' }}>Minggu Ini</option>
+          <option value="month" {{ request('deadline') == 'month' ? 'selected' : '' }}>Bulan Ini</option>
+        </select>
+
+        <select name="sort" onchange="document.getElementById('filterForm').submit()">
+          <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
+          <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+          <option value="deadline_asc" {{ request('sort') == 'deadline_asc' ? 'selected' : '' }}>Deadline Terdekat</option>
+          <option value="deadline_desc" {{ request('sort') == 'deadline_desc' ? 'selected' : '' }}>Deadline Terjauh</option>
+        </select>
+
+        <input type="text" name="keyword" class="search-box" placeholder="Cari judul..." value="{{ request('keyword') }}" oninput="delaySubmit()" />
+      </form>
+
+
       </header>
 
 <!-- Daftar tugas -->
@@ -175,27 +158,25 @@
       {{ $task->status == 'Done' ? 'task-done' : '' }}
       {{ $task->status == 'Late' ? 'task-late' : '' }}">
       
-      <div class="task-header">
-        <h3 class="task-title">{{ $task->task }}</h3>
-        <div class="task-actions">
-          <a href="{{ route('todolist.edit', $task->id) }}" class="btn-edit">✏️ Edit</a>
-
-          <form action="{{ route('todolist.destroy', $task->id) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" onclick="return confirm('Yakin ingin menghapus tugas ini?')" class="btn-delete">
-              🗑️ Hapus
-            </button>
-          </form>
-        </div>
-      </div>
-
+      <h3>{{ $task->task }}</h3>
       <p>Deadline: {{ $task->deadline }}</p>
+
+      <!-- Tombol Aksi -->
+      <div style="margin-top: 10px;">
+        <a href="{{ route('todolist.edit', $task->id) }}" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
+
+        <form action="{{ route('todolist.destroy', $task->id) }}" method="POST" style="display:inline;">
+          @csrf
+          @method('DELETE')
+          <button type="submit" onclick="return confirm('Yakin ingin menghapus tugas ini?')" style="color:red; background:none; border:none; cursor:pointer;">
+            🗑️ Hapus
+          </button>
+        </form>
+      </div>
     </div>
   @empty
     <p>Tidak ada tugas ditemukan.</p>
   @endforelse
-</section>
 </section>
 
       <!-- Chart tugas -->
@@ -230,5 +211,18 @@
       }
     });
   </script>
+
+  <script>
+    let typingTimer;
+    const doneTypingInterval = 500; // 0.5 detik
+
+    function delaySubmit() {
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(() => {
+        document.getElementById('filterForm').submit();
+      }, doneTypingInterval);
+    }
+  </script>
+
 </body>
 </html>

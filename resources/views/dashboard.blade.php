@@ -7,6 +7,40 @@
 
 
   <style>
+    .task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.task-actions a.btn-edit,
+.task-actions button.btn-delete {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-left: 5px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.task-actions a.btn-edit {
+  background-color: #007bff;
+  color: white;
+}
+
+.task-actions button.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
     * {
       margin: 0;
       padding: 0;
@@ -141,25 +175,27 @@
       {{ $task->status == 'Done' ? 'task-done' : '' }}
       {{ $task->status == 'Late' ? 'task-late' : '' }}">
       
-      <h3>{{ $task->task }}</h3>
-      <p>Deadline: {{ $task->deadline }}</p>
+      <div class="task-header">
+        <h3 class="task-title">{{ $task->task }}</h3>
+        <div class="task-actions">
+          <a href="{{ route('todolist.edit', $task->id) }}" class="btn-edit">✏️ Edit</a>
 
-      <!-- Tombol Aksi -->
-      <div style="margin-top: 10px;">
-        <a href="{{ route('todolist.edit', $task->id) }}" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
-
-        <form action="{{ route('todolist.destroy', $task->id) }}" method="POST" style="display:inline;">
-          @csrf
-          @method('DELETE')
-          <button type="submit" onclick="return confirm('Yakin ingin menghapus tugas ini?')" style="color:red; background:none; border:none; cursor:pointer;">
-            🗑️ Hapus
-          </button>
-        </form>
+          <form action="{{ route('todolist.destroy', $task->id) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" onclick="return confirm('Yakin ingin menghapus tugas ini?')" class="btn-delete">
+              🗑️ Hapus
+            </button>
+          </form>
+        </div>
       </div>
+
+      <p>Deadline: {{ $task->deadline }}</p>
     </div>
   @empty
     <p>Tidak ada tugas ditemukan.</p>
   @endforelse
+</section>
 </section>
 
       <!-- Chart tugas -->

@@ -2,143 +2,481 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profil Pengguna</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f1f2f6;
+    * {
       margin: 0;
-      padding: 40px;
+      padding: 0;
+      box-sizing: border-box;
     }
 
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Burger Menu Button */
+    .burger-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .burger-btn:hover {
+      background: #0056b3;
+      transform: scale(1.05);
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(145deg, #2c3e50, #34495e);
+      color: white;
+      padding: 80px 0 20px 0;
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #ecf0f1;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li {
+      margin: 0;
+    }
+
+    .sidebar nav ul li a,
+    .sidebar nav ul li button {
+      display: block;
+      padding: 15px 25px;
+      text-decoration: none;
+      color: #ecf0f1;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+    }
+
+    .sidebar nav ul li a:hover,
+    .sidebar nav ul li button:hover {
+      background: rgba(255,255,255,0.1);
+      border-left-color: #3498db;
+      transform: translateX(5px);
+    }
+
+    .sidebar nav ul li a.active {
+      background: rgba(255,255,255,0.2);
+      border-left-color: #3498db;
+    }
+
+    /* Overlay for mobile */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      margin-left: 0;
+      transition: margin-left 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main-content.sidebar-open {
+      margin-left: 280px;
+    }
+
+    /* Profile Container */
     .profile-container {
       background: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      padding: 40px;
+      border-radius: 15px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-top: 60px;
     }
 
     h1 {
-      margin-bottom: 25px;
-      color: #2f3542;
-      font-size: 28px;
+      margin-bottom: 30px;
+      color: #2c3e50;
+      font-size: 32px;
       text-align: center;
+      font-weight: 600;
     }
 
     .info {
       font-size: 18px;
-      margin-bottom: 15px;
-      color: #57606f;
+      margin-bottom: 20px;
+      color: #6c757d;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #007bff;
     }
 
     .info strong {
-      color: #2f3542;
+      color: #2c3e50;
+      display: inline-block;
+      min-width: 80px;
     }
 
     .edit-form {
       display: none;
-      margin-top: 20px;
+      margin-top: 30px;
+      padding: 25px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #e9ecef;
+    }
+
+    .edit-form label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2c3e50;
+      font-weight: 500;
+      font-size: 14px;
     }
 
     .edit-form input {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 2px solid #e9ecef;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .edit-form input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
     }
 
     .buttons {
       display: flex;
       justify-content: space-between;
+      gap: 15px;
       margin-top: 30px;
+      flex-wrap: wrap;
     }
 
     button, a.button {
-      background: #3742fa;
+      background: #007bff;
       color: white;
-      padding: 10px 20px;
+      padding: 12px 25px;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 8px;
       border: none;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     button:hover, a.button:hover {
-      background: #2f35d2;
+      background: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,123,255,0.3);
     }
 
     .cancel-btn {
-      background: #ced6e0;
-      color: #2f3542;
+      background: #6c757d;
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      background: #5a6268;
+    }
+
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #c3e6cb;
     }
 
     .error {
-      color: red;
-      font-size: 14px;
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #f5c6cb;
+    }
+
+    .error ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-content.sidebar-open {
+        margin-left: 0;
+      }
+
+      .profile-container {
+        margin: 80px 10px 20px 10px;
+        padding: 25px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+      button, a.button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .info {
+        font-size: 16px;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .sidebar-overlay {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="profile-container">
-    <h1>👤 Profil Pengguna</h1>
+  <!-- Burger Menu Button -->
+  <button class="burger-btn" onclick="toggleSidebar()">
+    <span id="burger-icon">☰</span>
+  </button>
 
-    @if(session('success'))
-      <div style="color: green; margin-bottom: 15px;">
-        {{ session('success') }}
-      </div>
-    @endif
+  <!-- Sidebar Overlay for Mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    @if($errors->any())
-      <div class="error">
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <h2>Task Manager</h2>
+      <nav>
         <ul>
-          @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-          @endforeach
+          <li><a href="/dashboard">📋 Dashboard</a></li>
+          <li><a href="#">➕ Tambah Tugas</a></li>
+          <li><a href="#">📊 Statistik</a></li>
+          <li><a href="/profile" class="active">👤 Profil</a></li>
+          <li>
+            <button type="button" onclick="logout()">🚪 Logout</button>
+          </li>
         </ul>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content" id="mainContent">
+      <div class="profile-container">
+        <h1>👤 Profil Pengguna</h1>
+
+        <!-- Success Message -->
+        <div class="success-message" style="display: none;" id="successMessage">
+          Profil berhasil diperbarui!
+        </div>
+
+        <!-- Error Messages -->
+        <div class="error" style="display: none;" id="errorMessage">
+          <ul>
+            <li>Terjadi kesalahan saat memperbarui profil</li>
+          </ul>
+        </div>
+
+        <!-- Profile Information -->
+        <div class="info">
+          <strong>Nama:</strong> John Doe
+        </div>
+        <div class="info">
+          <strong>Email:</strong> john.doe@example.com
+        </div>
+
+        <div class="buttons">
+          <button onclick="toggleEdit()">✏️ Edit Profil</button>
+          <a href="/dashboard" class="button">⬅️ Kembali ke Dashboard</a>
+        </div>
+
+        <!-- Edit Form (hidden initially) -->
+        <form method="POST" action="#" class="edit-form" id="editForm">
+          <label for="name">Nama Lengkap</label>
+          <input type="text" id="name" name="name" value="John Doe" required>
+
+          <label for="email">Alamat Email</label>
+          <input type="email" id="email" name="email" value="john.doe@example.com" required>
+
+          <label for="password">Password Baru (opsional)</label>
+          <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
+
+          <label for="password_confirmation">Konfirmasi Password</label>
+          <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password baru">
+
+          <div class="buttons">
+            <button type="submit">💾 Simpan Perubahan</button>
+            <button type="button" onclick="toggleEdit()" class="cancel-btn">❌ Batal</button>
+          </div>
+        </form>
       </div>
-    @endif
-
-    <div class="info"><strong>Nama:</strong> {{ Auth::user()->name }}</div>
-    <div class="info"><strong>Email:</strong> {{ Auth::user()->email }}</div>
-
-    <div class="buttons">
-      <button onclick="toggleEdit()">✏️ Edit</button>
-      <a href="/dashboard" class="button">⬅️ Dashboard</a>
-    </div>
-
-    <!-- Form edit (hidden awalnya) -->
-    <form method="POST" action="{{ route('profile.update') }}" class="edit-form" id="editForm">
-      @csrf
-
-      <label>Nama</label>
-      <input type="text" name="name" value="{{ Auth::user()->name }}" required>
-
-      <label>Email</label>
-      <input type="email" name="email" value="{{ Auth::user()->email }}" required>
-
-      <label>Password Baru (opsional)</label>
-      <input type="password" name="password">
-
-      <label>Konfirmasi Password</label>
-      <input type="password" name="password_confirmation">
-
-      <div class="buttons">
-        <button type="submit">💾 Simpan</button>
-        <button type="button" onclick="toggleEdit()" class="cancel-btn">❌ Batal</button>
-      </div>
-    </form>
+    </main>
   </div>
 
   <script>
+    // Sidebar Toggle Functionality
+    let sidebarOpen = false;
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('mainContent');
+      const overlay = document.getElementById('sidebarOverlay');
+      const burgerIcon = document.getElementById('burger-icon');
+
+      sidebarOpen = !sidebarOpen;
+
+      if (sidebarOpen) {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+        burgerIcon.innerHTML = '✕';
+        
+        // Only add margin on desktop
+        if (window.innerWidth > 768) {
+          mainContent.classList.add('sidebar-open');
+        }
+      } else {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        mainContent.classList.remove('sidebar-open');
+        burgerIcon.innerHTML = '☰';
+      }
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      const mainContent = document.getElementById('mainContent');
+      
+      if (window.innerWidth <= 768) {
+        mainContent.classList.remove('sidebar-open');
+      } else if (sidebarOpen) {
+        mainContent.classList.add('sidebar-open');
+      }
+    });
+
+    // Edit Form Toggle
     function toggleEdit() {
       const form = document.getElementById('editForm');
-      form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
+      const isVisible = form.style.display === 'block';
+      
+      form.style.display = isVisible ? 'none' : 'block';
+      
+      // Smooth scroll to form when showing
+      if (!isVisible) {
+        setTimeout(() => {
+          form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
     }
+
+    // Logout function
+    function logout() {
+      if (confirm('Yakin ingin logout?')) {
+        alert('Logout berhasil!');
+        // Implement actual logout logic here
+      }
+    }
+
+    // Form submission simulation
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Hide any existing messages
+      document.getElementById('successMessage').style.display = 'none';
+      document.getElementById('errorMessage').style.display = 'none';
+      
+      // Simulate form processing
+      setTimeout(() => {
+        // Show success message
+        document.getElementById('successMessage').style.display = 'block';
+        
+        // Update profile info with new values
+        const nameInput = document.getElementById('name').value;
+        const emailInput = document.getElementById('email').value;
+        
+        document.querySelector('.info:first-of-type').innerHTML = `<strong>Nama:</strong> ${nameInput}`;
+        document.querySelector('.info:last-of-type').innerHTML = `<strong>Email:</strong> ${emailInput}`;
+        
+        // Hide edit form
+        toggleEdit();
+        
+        // Scroll to top to show success message
+        document.querySelector('.profile-container').scrollIntoView({ behavior: 'smooth' });
+      }, 1000);
+    });
   </script>
 </body>
 </html>

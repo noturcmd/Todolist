@@ -285,6 +285,15 @@
       font-weight: 600;
     }
 
+    /* Chart Container - Fixed Size */
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       .main-content.sidebar-open {
@@ -307,6 +316,12 @@
 
       header {
         margin-top: 70px;
+      }
+
+      /* Smaller chart on mobile */
+      .chart-container {
+        height: 250px;
+        max-width: 350px;
       }
     }
 
@@ -335,7 +350,7 @@
           <li><a href="#">📋 Dashboard</a></li>
           <li><a href="#">➕ Tambah Tugas</a></li>
           <li><a href="#">📊 Statistik</a></li>
-          <li><a href="#">👤 Profil</a></li>
+          <li><a href="/profile">👤 Profil</a></li>
           <li>
             <button type="button" onclick="logout()">🚪 Logout</button>
           </li>
@@ -454,7 +469,9 @@
       <!-- Chart tugas -->
       <section class="chart-section">
         <h2>📊 Ringkasan Tugas</h2>
-        <canvas id="taskChart" width="400" height="200"></canvas>
+        <div class="chart-container">
+          <canvas id="taskChart"></canvas>
+        </div>
       </section>
     </main>
   </div>
@@ -478,14 +495,15 @@
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
+        aspectRatio: 1.5,
         plugins: {
           legend: {
             position: 'bottom',
             labels: {
-              padding: 20,
+              padding: 15,
               font: {
-                size: 14
+                size: 12
               }
             }
           }

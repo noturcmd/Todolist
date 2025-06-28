@@ -139,10 +139,23 @@
     <div class="task 
       {{ $task->status == 'Not Done' ? 'task-todo' : '' }}
       {{ $task->status == 'Done' ? 'task-done' : '' }}
-      {{ $task->status == 'Late' ? 'task-late' : '' }}
-    ">
+      {{ $task->status == 'Late' ? 'task-late' : '' }}">
+      
       <h3>{{ $task->task }}</h3>
       <p>Deadline: {{ $task->deadline }}</p>
+
+      <!-- Tombol Aksi -->
+      <div style="margin-top: 10px;">
+        <a href="{{ route('todolist.edit', $task->id) }}" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
+
+        <form action="{{ route('todolist.destroy', $task->id) }}" method="POST" style="display:inline;">
+          @csrf
+          @method('DELETE')
+          <button type="submit" onclick="return confirm('Yakin ingin menghapus tugas ini?')" style="color:red; background:none; border:none; cursor:pointer;">
+            🗑️ Hapus
+          </button>
+        </form>
+      </div>
     </div>
   @empty
     <p>Tidak ada tugas ditemukan.</p>

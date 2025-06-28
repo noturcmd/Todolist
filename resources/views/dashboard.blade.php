@@ -49,6 +49,20 @@
       color: #333;
     }
 
+    .sidebar form button {
+      background: none;
+      border: none;
+      color: #333;
+      cursor: pointer;
+      padding: 0;
+      font: inherit;
+      text-align: left;
+    }
+    .sidebar form button:hover {
+      text-decoration: underline;
+    }
+
+
     .main-content {
       flex: 1;
       padding: 20px;
@@ -114,6 +128,13 @@
           <li><a href="{{ route('todolist.create') }}">➕ Tambah Tugas</a></li>
           <li><a href="#">📊 Statistik</a></li>
           <li><a href="{{ route('profile') }}">👤 Profil</a></li>
+          <li>
+            <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+              @csrf
+              <button type="submit" style="background:none; border:none; color:#333; cursor:pointer;">🚪 Logout</button>
+            </form>
+          </li>
+
         </ul>
       </nav>
     </aside>

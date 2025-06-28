@@ -5,12 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Tugas</title>
 
-  @foreach($tasks as $task)
-  <div class="task task-{{ $task->status }}">
-    <h3>{{ $task->judul }}</h3>
-    <p>Deadline: {{ $task->deadline }}</p>
-  </div>
-@endforeach
 
   <style>
     * {
@@ -139,25 +133,21 @@
         </div>
       </header>
 
-      <!-- Daftar tugas -->
-      <section class="task-list">
-        <div class="task task-todo">
-          <h3>Belajar JavaScript</h3>
-          <p>Deadline: 2025-05-25</p>
-        </div>
-        <div class="task task-inprogress">
-          <h3>Desain UI Dashboard</h3>
-          <p>Deadline: 2025-05-22</p>
-        </div>
-        <div class="task task-done">
-          <h3>Setup Git Repository</h3>
-          <p>Deadline: 2025-05-15</p>
-        </div>
-        <div class="task task-late">
-          <h3>Kirim laporan mingguan</h3>
-          <p>Deadline: 2025-05-10</p>
-        </div>
-      </section>
+<!-- Daftar tugas -->
+<section class="task-list">
+  @forelse($tasks as $task)
+    <div class="task 
+      {{ $task->status == 'Not Done' ? 'task-todo' : '' }}
+      {{ $task->status == 'Done' ? 'task-done' : '' }}
+      {{ $task->status == 'Late' ? 'task-late' : '' }}
+    ">
+      <h3>{{ $task->task }}</h3>
+      <p>Deadline: {{ $task->deadline }}</p>
+    </div>
+  @empty
+    <p>Tidak ada tugas ditemukan.</p>
+  @endforelse
+</section>
 
       <!-- Chart tugas -->
       <section class="chart-section">
@@ -177,7 +167,7 @@
         labels: ['Belum Dikerjakan', 'Sedang Dikerjakan', 'Selesai', 'Lewat Deadline'],
         datasets: [{
           label: 'Status Tugas',
-          data: [1, 1, 1, 1],
+          data: [{{ $countNotDone }}, 0, {{ $countDone }}, {{ $countLate }}],
           backgroundColor: ['gray', '#007bff', '#28a745', '#dc3545'],
         }]
       },

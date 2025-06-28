@@ -35,3 +35,8 @@ Route::post('/profile/update', [UserController::class, 'update'])->name('profile
 Route::get('/todolist/create', [TodolistController::class, 'create'])->name('todolist.create');
 Route::post('/todolist/store', [TodolistController::class, 'store'])->name('todolist.store');
 
+// Tugas
+Route::get('/todolist/{id}', [TodolistController::class, 'show'])->name('todolist.show');
+Route::get('/todolist/{id}/edit', [TodolistController::class, 'edit'])->name('todolist.edit');
+Route::put('/todolist/{id}', [TodolistController::class, 'update'])->name('todolist.update');
+Route::delete('/todolist/{id}', [TodolistController::class, 'destroy'])->name('todolist.destroy');

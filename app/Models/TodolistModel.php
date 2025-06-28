@@ -12,6 +12,7 @@ class TodolistModel extends Model
     protected $table = 'todolist_models';
 
     protected $fillable = [
+        'user_id',
         'task',
         'description',
         'status',

@@ -17,6 +17,7 @@ class TodolistController extends Controller
     // Menyimpan data tugas ke database
     public function store(Request $request)
     {
+        //dd(Auth::user());
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
@@ -24,11 +25,11 @@ class TodolistController extends Controller
         ]);
 
         TodolistModel::create([
-            'user_id' => Auth::id(),
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
+            'user_id' => Auth::user()->id,
+            'task' => $request->judul,
+            'description' => $request->deskripsi,
             'deadline' => $request->deadline,
-            'status' => 'todo', // default status
+            'status' => $request->status, // default status
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Tugas berhasil ditambahkan!');

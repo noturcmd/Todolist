@@ -87,10 +87,9 @@
 
       <label for="status">Status</label>
       <select id="status" name="status" required>
-        <option value="todo">Belum Dikerjakan</option>
-        <option value="inprogress">Sedang Dikerjakan</option>
-        <option value="done">Selesai</option>
-        <option value="late">Lewat Deadline</option>
+        <option value="Not Done">Belum Dikerjakan</option>
+        <option value="Done">Selesai</option>
+        <option value="Late">Lewat Deadline</option>
       </select>
 
       <label for="deadline">Deadline</label>

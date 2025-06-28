@@ -8,12 +8,17 @@ use Illuminate\Support\Facades\Auth;
 
 class TodolistController extends Controller
 {
-    // Menampilkan form tambah tugas
+ // Menampilkan form tambah tugas
     public function create()
     {
         return view('add_todolist');
     }
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     // Menyimpan data tugas ke database
     public function store(Request $request)
     {
@@ -38,7 +43,8 @@ class TodolistController extends Controller
     // Menampilkan semua tugas di dashboard
     public function index()
     {
-        $tasks = TodolistModel::where('id', Auth::id())->get();
+        $tasks = TodolistModel::where('user_id', Auth::id())->get();
         return view('dashboard', compact('tasks'));
     }
+
 }

@@ -22,9 +22,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Route::get('/login', function () {
 //     return view('login_page');
 // });
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware('auth')->name('dashboard');
 
 Route::get('/dashboard', [TodolistController::class, 'index'])->name('dashboard')->middleware('auth');
 
@@ -32,6 +32,6 @@ Route::get('/dashboard', [TodolistController::class, 'index'])->name('dashboard'
 Route::get('/profile', [UserController::class, 'showProfile'])->name('profile')->middleware('auth');
 Route::post('/profile/update', [UserController::class, 'update'])->name('profile.update')->middleware('auth');
 
-Route::get('/todolist/create', [TodolistController::class, 'create'])->name('todolist.create');
-Route::post('/todolist/store', [TodolistController::class, 'store'])->name('todolist.store');
+Route::get('/todolist/create', [TodolistController::class, 'create'])->name('todolist.create')->middleware('auth');
+Route::post('/todolist/store', [TodolistController::class, 'store'])->name('todolist.store')->middleware('auth');
 

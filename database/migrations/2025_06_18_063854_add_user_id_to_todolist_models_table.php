@@ -9,14 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
+public function up(): void
 {
-    Schema::table('todolist_models', function (Blueprint $table) {
-        $table->unsignedBigInteger('user_id')->after('id'); // atau after kolom manapun
-        // Optional: tambahkan foreign key jika ada tabel users
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-    });
+    if (!Schema::hasColumn('todolist_models', 'user_id')) {
+        Schema::table('todolist_models', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        });
+    }
 }
+
 
 public function down(): void
 {

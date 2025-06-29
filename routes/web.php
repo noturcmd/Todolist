@@ -7,7 +7,7 @@ use App\Http\Controllers\TodolistController;
 
 // Halaman awal
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard');
 });
 
 // Login & Register

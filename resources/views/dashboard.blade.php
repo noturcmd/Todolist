@@ -23,7 +23,7 @@
 
     /* Burger Menu Button */
     .burger-btn {
-      position: fixed;
+      position: absolute;
       top: 20px;
       left: 20px;
       z-index: 1001;
@@ -128,6 +128,7 @@
       margin-left: 0;
       transition: margin-left 0.3s ease;
       min-height: 100vh;
+      position: relative;
     }
 
     .main-content.sidebar-open {
@@ -142,6 +143,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       margin-bottom: 20px;
       margin-top: 60px;
+      position: relative;
     }
 
     header h1 {
@@ -333,11 +335,6 @@
   </style>
 </head>
 <body>
-  <!-- Burger Menu Button -->
-  <button class="burger-btn" onclick="toggleSidebar()">
-    <span id="burger-icon">☰</span>
-  </button>
-
   <!-- Sidebar Overlay for Mobile -->
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
@@ -360,6 +357,11 @@
 
     <!-- Main content -->
     <main class="main-content" id="mainContent">
+      <!-- Burger Menu Button - Now inside main content -->
+      <button class="burger-btn" onclick="toggleSidebar()">
+        <span id="burger-icon">☰</span>
+      </button>
+
       <header>
         <h1>📋 Dashboard Tugas</h1>
         <form method="GET" action="#" id="filterForm" class="filters">

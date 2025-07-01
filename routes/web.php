@@ -36,5 +36,6 @@ Route::middleware(['check.user_email'])->group(function () {
     Route::patch('/todolist/{id}/status', [TodolistController::class, 'updateStatus'])->name('todolist.updateStatus');
 });
 
-Route::get('/statistic', [App\Http\Controllers\StatisticController::class, 'index']);
+Route::get('/statistic', [App\Http\Controllers\StatisticController::class, 'index'])->name('statistic.index');
+
 

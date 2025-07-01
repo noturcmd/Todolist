@@ -380,52 +380,50 @@
             <div class="tasks-header">
                 <h2>Daftar Tugas</h2>
                 <div class="filter-controls">
-                    <select id="statusFilter" onchange="filterTasks()">
-                        <option value="all">Semua Status</option>
-                        <option value="pending">Belum Dikerjakan</option>
-                        <option value="completed">Selesai</option>
-                        <option value="overdue">Terlambat</option>
-                    </select>
-                    <select id="sortBy" onchange="sortTasks()">
-                        <option value="created_desc">Terbaru</option>
-                        <option value="created_asc">Terlama</option>
-                        <option value="deadline_asc">Deadline Terdekat</option>
-                        <option value="deadline_desc">Deadline Terjauh</option>
-                    </select>
+                    <form method="GET" action="{{ route('statistic.index') }}">
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="all" {{ request('status')=='all' ? 'selected' : '' }}>Semua Status</option>
+                            <option value="Not Done" {{ request('status')=='Not Done' ? 'selected' : '' }}>Belum Dikerjakan</option>
+                            <option value="Done" {{ request('status')=='Done' ? 'selected' : '' }}>Selesai</option>
+                            <option value="Late" {{ request('status')=='Late' ? 'selected' : '' }}>Terlambat</option>
+                        </select>
+                        <!-- contoh filter tanggal opsional -->
+                        <!--
+                <input type="date" name="date" value="{{ request('date') }}" onchange="this.form.submit()">
+                -->
+                    </form>
                 </div>
             </div>
 
-            <div class="tasks-grid" id="tasksGrid">
-
-            </div>
-
-            <div>
-                @foreach($tasks as $task)
+            <div class="tasks-grid">
+                @forelse ($tasks as $task)
                     <div class="task-item">
                         <div class="task-header">
-                            <h3 class="task-title">{{$task->task}}</h3>
-                            <span class="task-status status-${task.status}">
-                            {{$task->status}}
-                        </span>
+                            <h3 class="task-title">{{ $task->task }}</h3>
+                            <span class="task-status status-{{ Str::slug($task->status) }}">{{ $task->status }}</span>
                         </div>
-                        <p class="task-description">{{$task->description}}</p>
+                        <p class="task-description">{{ $task->description }}</p>
                         <div class="task-meta">
                             <div class="task-deadline">
-                                <span>📅</span>
-                                <span>Deadline: {{ \Carbon\Carbon::parse($task->deadline)->translatedFormat('l, d F Y') }}</span>
+                                <span>📅</span> Deadline: {{ \Carbon\Carbon::parse($task->deadline)->translatedFormat('l, d F Y') }}
                             </div>
                             <div class="task-created">
-                                <span>🕐</span>
-                                <span>Dibuat: {{ \Carbon\Carbon::parse($task->created_at)->translatedFormat('l, d F Y') }}</span>
+                                <span>🕐</span> Dibuat: {{ \Carbon\Carbon::parse($task->created_at)->translatedFormat('l, d F Y') }}
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="empty-state">
+                        <i>📄</i>
+                        <h3>Tidak ada tugas</h3>
+                    </div>
+                @endforelse
             </div>
 
-            <div class="pagination" id="pagination">
-                <!-- Pagination will be populated here -->
+            <div class="pagination">
+                {{ $tasks->withQueryString()->links('pagination::simple-default') }}
             </div>
+
         </section>
     </main>
 </div>

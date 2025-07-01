@@ -16,14 +16,20 @@ class TodolistController extends Controller
     // Menampilkan semua tugas di dashboard
     public function index(Request $request)
     {
-        $query = TodolistModel::where('user_id', Auth::id());
+        if (!request()->cookie('user_email')) {
+            return redirect('/login')->with('error', 'Sesi tidak ditemukan. Silakan login kembali.');
+        }
 
-        // Filter Status
+        // Query untuk mendapatkan tugas yang dibuat hari ini oleh user yang sedang login
+        $query = TodolistModel::where('user_id', Auth::id())
+            ->whereDate('created_at', today());  // Hanya tugas yang dibuat hari ini
+
+        // Filter berdasarkan status jika ada
         if ($request->has('status') && $request->status != 'all') {
             $query->where('status', $request->status);
         }
 
-        // Filter Deadline
+        // Filter deadline jika ada
         if ($request->has('deadline') && $request->deadline != 'all') {
             if ($request->deadline == 'today') {
                 $query->whereDate('deadline', now()->toDateString());
@@ -34,15 +40,15 @@ class TodolistController extends Controller
             }
         }
 
-        // Filter Keyword (Search by task name or description)
+        // Filter berdasarkan keyword
         if ($request->has('keyword') && $request->keyword != '') {
             $query->where(function ($q) use ($request) {
                 $q->where('task', 'like', '%' . $request->keyword . '%')
-                ->orWhere('description', 'like', '%' . $request->keyword . '%');
+                    ->orWhere('description', 'like', '%' . $request->keyword . '%');
             });
         }
 
-        // Sort
+        // Sort data berdasarkan sort type
         if ($request->has('sort')) {
             if ($request->sort == 'latest') {
                 $query->orderBy('created_at', 'desc');
@@ -55,14 +61,17 @@ class TodolistController extends Controller
             }
         }
 
+        // Ambil hasil query
         $tasks = $query->get();
 
-        // Chart Count (tetap jalan seperti biasa)
-        $countNotDone = TodolistModel::where('user_id', Auth::id())->where('status', 'Not Done')->count();
-        $countDone = TodolistModel::where('user_id', Auth::id())->where('status', 'Done')->count();
-        $countLate = TodolistModel::where('user_id', Auth::id())->where('status', 'Late')->count();
+        // Hitung jumlah tugas berdasarkan status
+        $countNotDone = TodolistModel::where('user_id', Auth::id())->where('status', 'Not Done')->whereDate('created_at', today())->count();
+        $countDone = TodolistModel::where('user_id', Auth::id())->where('status', 'Done')->whereDate('created_at', today())->count();
+        $countLate = TodolistModel::where('user_id', Auth::id())->where('status', 'Late')->whereDate('created_at', today())->count();
 
-        return view('dashboard', compact('tasks', 'countNotDone', 'countDone', 'countLate'));
+        // Kirim data tugas ke view
+        $userName = Auth::user()->name;  // Get the authenticated user's name
+        return view('dashboard', compact('tasks', 'countNotDone', 'countDone', 'countLate', 'userName'));
     }
 
 
@@ -133,16 +142,15 @@ class TodolistController extends Controller
     }
 
     public function updateStatus(Request $request, $id)
-{
-    $request->validate([
-        'status' => 'required|in:Not Done,Done,Late'
-    ]);
+    {
+        $request->validate([
+            'status' => 'required|in:Not Done,Done,Late'
+        ]);
 
-    $task = TodolistModel::findOrFail($id);
-    $task->status = $request->status;
-    $task->save();
+        $task = TodolistModel::findOrFail($id);
+        $task->status = $request->status;
+        $task->save();
 
-    return redirect()->back()->with('success', 'Status tugas berhasil diperbarui!');
-}
-
+        return redirect()->back()->with('success', 'Status tugas berhasil diperbarui!');
+    }
 }

@@ -9,11 +9,13 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    // Menampilkan halaman login
     public function showLoginForm()
     {
         return view('login_page');
     }
 
+    // Proses login
     public function login(Request $request)
     {
         $request->validate([
@@ -24,10 +26,10 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Simpan email ke sesi (opsional)
+            // Simpan email ke sesi
             $request->session()->put("user", $request->input("email"));
 
-            // Buat cookie: nama = user_email, isi = email login, durasi = 60 menit
+            // Buat cookie untuk 'user_email'
             $cookie = cookie('user_email', $request->input('email'), 60);
 
             // Redirect ke dashboard dengan cookie
@@ -39,11 +41,13 @@ class AuthController extends Controller
         ])->withInput();
     }
 
+    // Menampilkan halaman register
     public function showRegisterForm()
     {
         return view('register_page');
     }
 
+    // Proses registrasi
     public function register(Request $request)
     {
         $request->validate([
@@ -61,16 +65,21 @@ class AuthController extends Controller
         return redirect()->route('login.form')->with('success', 'Registrasi berhasil! Silakan login.');
     }
 
+    // Dashboard
     public function dashboard(Request $request)
     {
-        // Cek apakah ada cookie user_email
+        // Pastikan pengguna sudah login dan cookie 'user_email' ada
         if (!$request->cookie('user_email')) {
             return redirect('/login')->with('error', 'Sesi tidak ditemukan. Silakan login kembali.');
         }
 
-        return view('dashboard'); // Ganti dengan view dashboard kamu
+        // Ambil nama pengguna yang sedang login
+        $userName = Auth::user()->name;
+
+        return view('dashboard', compact('userName'));
     }
 
+    // Logout
     public function logout(Request $request)
     {
         Auth::logout();

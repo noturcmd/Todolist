@@ -156,6 +156,172 @@
             margin: 0;
         }
 
+        /* Stats Cards Section */
+        .stats-section {
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.total {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-card.pending {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #8B4513;
+        }
+
+        .stat-card.completed {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2d5016;
+        }
+
+        .stat-card.overdue {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #8B0000;
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            opacity: 0.9;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-percentage {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Quick Stats Bar */
+        .quick-stats {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .quick-stats h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .progress-bars {
+            display: grid;
+            gap: 15px;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .progress-label {
+            min-width: 120px;
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+            position: relative;
+        }
+
+        .progress-fill.completed {
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+
+        .progress-fill.pending {
+            background: linear-gradient(90deg, #ffc107, #fd7e14);
+        }
+
+        .progress-fill.overdue {
+            background: linear-gradient(90deg, #dc3545, #e83e8c);
+        }
+
+        .progress-percentage {
+            min-width: 45px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 600;
+            color: #495057;
+        }
+
         /* Filters */
         .filters {
             display: flex;
@@ -305,6 +471,10 @@
                 margin-left: 0;
             }
 
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
             .filters {
                 flex-direction: column;
                 align-items: stretch;
@@ -319,10 +489,19 @@
                 justify-content: center;
             }
 
-            /* Smaller chart on mobile */
             .chart-container {
                 height: 250px;
                 max-width: 350px;
+            }
+
+            .progress-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .progress-label {
+                min-width: auto;
             }
         }
 
@@ -343,8 +522,8 @@
         <h2>Task Manager</h2>
         <nav>
             <ul>
-                <li><a href="#">📋 Dashboard</a></li>
-                <li><a href="#">➕ Tambah Tugas</a></li>
+                <li><a href="/">📋 Dashboard</a></li>
+                <li><a href="/todolist/create">➕ Tambah Tugas</a></li>
                 <li><a href="#">📊 Statistik</a></li>
                 <li><a href="/profile">👤 Profil</a></li>
                 <li>
@@ -362,8 +541,9 @@
                 <button class="burger-btn" onclick="toggleSidebar()">
                     <span id="burger-icon">☰</span>
                 </button>
-                <h1>📋 Dashboard Tugas</h1>
+                <h1>📋 Dashboard Tugas -- {{ $userName }}</h1>
             </div>
+
 
             <!-- Filters Section -->
             <form method="GET" action="#" id="filterForm" class="filters">
@@ -393,85 +573,119 @@
             </form>
         </header>
 
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card total">
+                    <div class="stat-card-header">
+                        <div class="stat-icon">📋</div>
+                    </div>
+                    <div class="stat-number" id="totalTasks">{{ $countNotDone + $countDone + $countLate }}</div>
+                    <div class="stat-label">Total Tugas</div>
+                    <div class="stat-percentage">
+                        <span>📈</span>
+                        <span>Semua kategori</span>
+                    </div>
+                </div>
+
+                <div class="stat-card pending">
+                    <div class="stat-card-header">
+                        <div class="stat-icon">⏳</div>
+                    </div>
+                    <div class="stat-number" id="pendingTasks">{{ $countNotDone }}</div>
+                    <div class="stat-label">Belum Dikerjakan</div>
+                    <div class="stat-percentage">
+                        <span>🔄</span>
+                        <span id="pendingPercentage">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countNotDone / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</span>
+                    </div>
+                </div>
+
+                <div class="stat-card completed">
+                    <div class="stat-card-header">
+                        <div class="stat-icon">✅</div>
+                    </div>
+                    <div class="stat-number" id="completedTasks">{{ $countDone }}</div>
+                    <div class="stat-label">Selesai</div>
+                    <div class="stat-percentage">
+                        <span>🎉</span>
+                        <span id="completedPercentage">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countDone / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</span>
+                    </div>
+                </div>
+
+                <div class="stat-card overdue">
+                    <div class="stat-card-header">
+                        <div class="stat-icon">⚠️</div>
+                    </div>
+                    <div class="stat-number" id="overdueTasks">{{ $countLate }}</div>
+                    <div class="stat-label">Lewat Deadline</div>
+                    <div class="stat-percentage">
+                        <span>🚨</span>
+                        <span id="overduePercentage">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countLate / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Progress Bars -->
+            <div class="quick-stats">
+                <h3>📊 Progress Overview</h3>
+                <div class="progress-bars">
+                    <div class="progress-item">
+                        <div class="progress-label">Selesai</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill completed" id="completedProgress" style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countDone / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
+                        </div>
+                        <div class="progress-percentage" id="completedProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countDone / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">Belum Dikerjakan</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill pending" id="pendingProgress" style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countNotDone / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
+                        </div>
+                        <div class="progress-percentage" id="pendingProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countNotDone / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">Terlambat</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill overdue" id="overdueProgress" style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countLate / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
+                        </div>
+                        <div class="progress-percentage" id="overdueProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countLate / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Daftar tugas -->
-        <section class="task-list">
-            <!-- Sample Task 1 -->
-            <div class="task task-todo">
-                <h3>Menyelesaikan Laporan Bulanan</h3>
-                <p>Deadline: 2025-07-05</p>
+        <section>
+            <h2 style="margin-bottom: 20px">Tugas Hari Ini</h2>
+            <section class="task-list">
+                @foreach ($tasks as $task)
+                    <div class="task {{ $task->status === 'Done' ? 'task-done' : ($task->status === 'Late' ? 'task-late' : 'task-todo') }}">
+                        <h3>{{ $task->task }}</h3>
+                        <p>{{ $task->description }}</p>
+                        <p>Deadline: {{ $task->deadline }}</p>
 
-                <div class="status-buttons">
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn not-done active">Belum</button>
-                    </form>
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn done">Selesai</button>
-                    </form>
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn late">Terlambat</button>
-                    </form>
-                </div>
+                        <div class="status-buttons">
+                            <form style="display: inline;">
+                                <button type="button" class="status-btn {{ $task->status === 'Not Done' ? 'not-done active' : '' }}">Belum</button>
+                            </form>
+                            <form style="display: inline;">
+                                <button type="button" class="status-btn {{ $task->status === 'Done' ? 'done active' : '' }}">Selesai</button>
+                            </form>
+                            <form style="display: inline;">
+                                <button type="button" class="status-btn {{ $task->status === 'Late' ? 'late active' : '' }}">Terlambat</button>
+                            </form>
+                        </div>
 
-                <div style="margin-top: 10px;">
-                    <a href="#" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
-                    <button type="button" onclick="return confirm('Yakin ingin menghapus tugas ini?')"
-                            style="color:red; background:none; border:none; cursor:pointer;">
-                        🗑️ Hapus
-                    </button>
-                </div>
-            </div>
-
-            <!-- Sample Task 2 -->
-            <div class="task task-done">
-                <h3>Presentasi Project Q2</h3>
-                <p>Deadline: 2025-06-28</p>
-
-                <div class="status-buttons">
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn not-done">Belum</button>
-                    </form>
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn done active">Selesai</button>
-                    </form>
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn late">Terlambat</button>
-                    </form>
-                </div>
-
-                <div style="margin-top: 10px;">
-                    <a href="#" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
-                    <button type="button" onclick="return confirm('Yakin ingin menghapus tugas ini?')"
-                            style="color:red; background:none; border:none; cursor:pointer;">
-                        🗑️ Hapus
-                    </button>
-                </div>
-            </div>
-
-            <!-- Sample Task 3 -->
-            <div class="task task-late">
-                <h3>Review Dokumen Legal</h3>
-                <p>Deadline: 2025-06-25</p>
-
-                <div class="status-buttons">
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn not-done">Belum</button>
-                    </form>
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn done">Selesai</button>
-                    </form>
-                    <form style="display: inline;">
-                        <button type="button" class="status-btn late active">Terlambat</button>
-                    </form>
-                </div>
-
-                <div style="margin-top: 10px;">
-                    <a href="#" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
-                    <button type="button" onclick="return confirm('Yakin ingin menghapus tugas ini?')"
-                            style="color:red; background:none; border:none; cursor:pointer;">
-                        🗑️ Hapus
-                    </button>
-                </div>
-            </div>
+                        <div style="margin-top: 10px;">
+                            <a href="#" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
+                            <button type="button" onclick="return confirm('Yakin ingin menghapus tugas ini?')"
+                                    style="color:red; background:none; border:none; cursor:pointer;">
+                                🗑️ Hapus
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </section>
         </section>
 
         <!-- Chart tugas -->
@@ -486,7 +700,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Chart Configuration
     const ctx = document.getElementById('taskChart').getContext('2d');
 
     const taskChart = new Chart(ctx, {
@@ -495,7 +708,7 @@
             labels: ['Belum Dikerjakan', 'Selesai', 'Lewat Deadline'],
             datasets: [{
                 label: 'Status Tugas',
-                data: [1, 1, 1],
+                data: [{{ $countNotDone }}, {{ $countDone }}, {{ $countLate }}],  // Use the counts from the controller
                 backgroundColor: ['#6c757d', '#28a745', '#dc3545'],
                 borderWidth: 2,
                 borderColor: '#fff'
@@ -518,6 +731,54 @@
             }
         }
     });
+
+    // Function to update statistics when task status changes
+    function updateStats() {
+        const tasks = document.querySelectorAll('.task');
+        let totalTasks = tasks.length;
+        let completedTasks = 0;
+        let pendingTasks = 0;
+        let overdueTasks = 0;
+
+        tasks.forEach(task => {
+            if (task.classList.contains('task-done')) {
+                completedTasks++;
+            } else if (task.classList.contains('task-late')) {
+                overdueTasks++;
+            } else {
+                pendingTasks++;
+            }
+        });
+
+        // Update stat cards
+        document.getElementById('totalTasks').textContent = totalTasks;
+        document.getElementById('completedTasks').textContent = completedTasks;
+        document.getElementById('pendingTasks').textContent = pendingTasks;
+        document.getElementById('overdueTasks').textContent = overdueTasks;
+
+        // Calculate percentages
+        const completedPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100 * 10) / 10 : 0;
+        const pendingPercentage = totalTasks > 0 ? Math.round((pendingTasks / totalTasks) * 100 * 10) / 10 : 0;
+        const overduePercentage = totalTasks > 0 ? Math.round((overdueTasks / totalTasks) * 100 * 10) / 10 : 0;
+
+        // Update percentage displays
+        document.getElementById('completedPercentage').textContent = completedPercentage + '%';
+        document.getElementById('pendingPercentage').textContent = pendingPercentage + '%';
+        document.getElementById('overduePercentage').textContent = overduePercentage + '%';
+
+        // Update progress bars
+        document.getElementById('completedProgress').style.width = completedPercentage + '%';
+        document.getElementById('pendingProgress').style.width = pendingPercentage + '%';
+        document.getElementById('overdueProgress').style.width = overduePercentage + '%';
+
+        document.getElementById('completedProgressText').textContent = completedPercentage + '%';
+        document.getElementById('pendingProgressText').textContent = pendingPercentage + '%';
+        document.getElementById('overdueProgressText').textContent = overduePercentage + '%';
+
+        // Update chart
+        taskChart.data.datasets[0].data = [pendingTasks, completedTasks, overdueTasks];
+        taskChart.update();
+    }
 
     // Logout confirmation function
     function confirmLogout() {
@@ -600,56 +861,13 @@
             } else if (e.target.classList.contains('late')) {
                 taskElement.classList.add('task-late');
             }
+
+            // Update statistics after status change
+            updateStats();
         }
     });
-
-    // Function to get cookie value
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    }
-
-    // Check if user is logged in - SEMENTARA DINONAKTIFKAN UNTUK TESTING
-    window.onload = function() {
-        console.log("=== DEBUGGING COOKIES ===");
-        console.log("Current URL:", window.location.href);
-        console.log("All cookies:", document.cookie);
-
-        // Coba berbagai kemungkinan nama cookie
-        const possibleNames = ['user_email', 'userEmail', 'email', 'user', 'login_email'];
-
-        possibleNames.forEach(name => {
-            const value = getCookie(name);
-            console.log(`Cookie '${name}':`, value);
-        });
-
-        // Untuk sementara, NONAKTIFKAN popup agar bisa debug
-        console.log("POPUP DINONAKTIFKAN UNTUK DEBUGGING");
-        console.log("Silakan cek console dan beri tahu hasil cookie apa yang muncul");
-
-        // UNCOMMENT baris di bawah setelah tahu cookie mana yang benar
-        /*
-        const userEmail = getCookie("user_email");
-        if (!userEmail || userEmail.trim() === '') {
-            showPopup();
-        }
-        */
-    };
-
-    // Function to show the popup
-    function showPopup() {
-        const popup = confirm('You are not logged in. You will be redirected to the login page.');
-        if (popup) {
-            // Redirect to login page
-            window.location.href = '/login';
-        } else {
-            // If user clicks Cancel, redirect anyway for security
-            window.location.href = '/login';
-        }
-    }
 </script>
+
 
 </body>
 </html>

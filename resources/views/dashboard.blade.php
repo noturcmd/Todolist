@@ -632,23 +632,35 @@
                     <div class="progress-item">
                         <div class="progress-label">Selesai</div>
                         <div class="progress-bar">
-                            <div class="progress-fill completed" id="completedProgress" style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countDone / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
+                            <div class="progress-fill completed" id="completedProgress"
+                                 style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countDone / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
                         </div>
-                        <div class="progress-percentage" id="completedProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countDone / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</div>
+                        <div class="progress-percentage"
+                             id="completedProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countDone / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}
+                            %
+                        </div>
                     </div>
                     <div class="progress-item">
                         <div class="progress-label">Belum Dikerjakan</div>
                         <div class="progress-bar">
-                            <div class="progress-fill pending" id="pendingProgress" style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countNotDone / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
+                            <div class="progress-fill pending" id="pendingProgress"
+                                 style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countNotDone / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
                         </div>
-                        <div class="progress-percentage" id="pendingProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countNotDone / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</div>
+                        <div class="progress-percentage"
+                             id="pendingProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countNotDone / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}
+                            %
+                        </div>
                     </div>
                     <div class="progress-item">
                         <div class="progress-label">Terlambat</div>
                         <div class="progress-bar">
-                            <div class="progress-fill overdue" id="overdueProgress" style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countLate / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
+                            <div class="progress-fill overdue" id="overdueProgress"
+                                 style="width: {{ $countNotDone + $countDone + $countLate > 0 ? ($countLate / ($countNotDone + $countDone + $countLate)) * 100 : 0 }}%"></div>
                         </div>
-                        <div class="progress-percentage" id="overdueProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countLate / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}%</div>
+                        <div class="progress-percentage"
+                             id="overdueProgressText">{{ $countNotDone + $countDone + $countLate > 0 ? round(($countLate / ($countNotDone + $countDone + $countLate)) * 100, 1) : 0 }}
+                            %
+                        </div>
                     </div>
                 </div>
             </div>
@@ -659,30 +671,62 @@
             <h2 style="margin-bottom: 20px">Tugas Hari Ini</h2>
             <section class="task-list">
                 @foreach ($tasks as $task)
-                    <div class="task {{ $task->status === 'Done' ? 'task-done' : ($task->status === 'Late' ? 'task-late' : 'task-todo') }}">
+                    <div
+                        class="task {{ $task->status === 'Done' ? 'task-done' : ($task->status === 'Late' ? 'task-late' : 'task-todo') }}">
                         <h3>{{ $task->task }}</h3>
                         <p>{{ $task->description }}</p>
                         <p>Deadline: {{ \Carbon\Carbon::parse($task->deadline)->translatedFormat('l, d F Y') }}</p>
 
 
                         <div class="status-buttons">
-                            <form style="display: inline;">
-                                <button type="button" class="status-btn {{ $task->status === 'Not Done' ? 'not-done active' : '' }}">Belum</button>
+                            <form action="{{ route('todolist.updateStatus', $task->id) }}" method="POST"
+                                  style="display:inline;">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="Not Done">
+                                <button type="submit"
+                                        class="status-btn {{ $task->status === 'Not Done' ? 'not-done active' : '' }}">
+                                    Belum
+                                </button>
                             </form>
-                            <form style="display: inline;">
-                                <button type="button" class="status-btn {{ $task->status === 'Done' ? 'done active' : '' }}">Selesai</button>
+
+                            <form action="{{ route('todolist.updateStatus', $task->id) }}" method="POST"
+                                  style="display:inline;">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="Done">
+                                <button type="submit"
+                                        class="status-btn {{ $task->status === 'Done' ? 'done active' : '' }}">
+                                    Selesai
+                                </button>
                             </form>
-                            <form style="display: inline;">
-                                <button type="button" class="status-btn {{ $task->status === 'Late' ? 'late active' : '' }}">Terlambat</button>
+
+                            <form action="{{ route('todolist.updateStatus', $task->id) }}" method="POST"
+                                  style="display:inline;">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" value="Late">
+                                <button type="submit"
+                                        class="status-btn {{ $task->status === 'Late' ? 'late active' : '' }}">
+                                    Terlambat
+                                </button>
                             </form>
                         </div>
 
+
                         <div style="margin-top: 10px;">
-                            <a href="#" style="margin-right:10px; color:blue; text-decoration:none;">✏️ Edit</a>
-                            <button type="button" onclick="return confirm('Yakin ingin menghapus tugas ini?')"
-                                    style="color:red; background:none; border:none; cursor:pointer;">
-                                🗑️ Hapus
-                            </button>
+                            <a href="{{ route('todolist.edit', $task->id) }}" style="margin-right:10px; color:blue; text-decoration:none;">
+                                ✏️ Edit
+                            </a>
+
+                            <form action="{{ route('todolist.destroy', $task->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus tugas ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="color:red; background:none; border:none; cursor:pointer;">
+                                    🗑️ Hapus
+                                </button>
+                            </form>
+
                         </div>
                     </div>
                 @endforeach

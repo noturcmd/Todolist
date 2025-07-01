@@ -22,7 +22,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+            $request->session()->put("user", $request->input("email"));
             return redirect()->intended('/dashboard'); // Ubah sesuai halaman setelah login
         }
 

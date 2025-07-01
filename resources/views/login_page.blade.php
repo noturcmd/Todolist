@@ -27,18 +27,6 @@
     </div>
     <button class="login-button" type="submit">Login</button>
     </form>
-
-    <!-- <form action="/login" method="POST">
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required />
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-      </div>
-      <button class="login-button" type="submit">Login</button>
-    </form> -->
     <div class="register-link">
       Belum punya akun? <a href="/register">Daftar di sini</a>
     </div>

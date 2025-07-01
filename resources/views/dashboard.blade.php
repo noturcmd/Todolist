@@ -21,21 +21,18 @@
       min-height: 100vh;
     }
 
-    /* Burger Menu Button */
+    /* Burger Menu Button - Now positioned in header */
     .burger-btn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 1001;
       background: #007bff;
       color: white;
       border: none;
       border-radius: 8px;
-      padding: 10px;
+      padding: 10px 12px;
       cursor: pointer;
       font-size: 18px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
+      margin-right: 15px;
     }
 
     .burger-btn:hover {
@@ -48,7 +45,7 @@
       width: 280px;
       background: linear-gradient(145deg, #2c3e50, #34495e);
       color: white;
-      padding: 80px 0 20px 0;
+      padding: 20px 0;
       position: fixed;
       left: 0;
       top: 0;
@@ -142,15 +139,21 @@
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       margin-bottom: 20px;
-      margin-top: 60px;
       position: relative;
     }
 
-    header h1 {
-      color: #2c3e50;
+    /* Header Top - Contains burger menu and title */
+    .header-top {
+      display: flex;
+      align-items: center;
       margin-bottom: 20px;
+    }
+
+    .header-top h1 {
+      color: #2c3e50;
       font-size: 28px;
       font-weight: 600;
+      margin: 0;
     }
 
     /* Filters */
@@ -316,10 +319,6 @@
         justify-content: center;
       }
 
-      header {
-        margin-top: 70px;
-      }
-
       /* Smaller chart on mobile */
       .chart-container {
         height: 250px;
@@ -349,7 +348,7 @@
           <li><a href="#">📊 Statistik</a></li>
           <li><a href="/profile">👤 Profil</a></li>
           <li>
-            <button type="button" onclick="logout()">🚪 Logout</button>
+            <button onclick="confirmLogout()">🚪 Logout</button>
           </li>
         </ul>
       </nav>
@@ -357,13 +356,16 @@
 
     <!-- Main content -->
     <main class="main-content" id="mainContent">
-      <!-- Burger Menu Button - Now inside main content -->
-      <button class="burger-btn" onclick="toggleSidebar()">
-        <span id="burger-icon">☰</span>
-      </button>
-
       <header>
-        <h1>📋 Dashboard Tugas</h1>
+        <!-- Header Top Section with Burger Menu and Title -->
+        <div class="header-top">
+          <button class="burger-btn" onclick="toggleSidebar()">
+            <span id="burger-icon">☰</span>
+          </button>
+          <h1>📋 Dashboard Tugas</h1>
+        </div>
+
+        <!-- Filters Section -->
         <form method="GET" action="#" id="filterForm" class="filters">
           <select name="status" onchange="document.getElementById('filterForm').submit();">
             <option value="all">Semua Status</option>
@@ -513,6 +515,15 @@
       }
     });
 
+    // Logout confirmation function
+    function confirmLogout() {
+      const result = confirm('Apakah Anda yakin ingin logout?');
+      if (result) {
+        // Redirect to logout URL
+        window.location.href = '/logout';
+      }
+    }
+
     // Sidebar Toggle Functionality
     let sidebarOpen = false;
 
@@ -561,14 +572,6 @@
       typingTimer = setTimeout(() => {
         document.getElementById('filterForm').submit();
       }, doneTypingInterval);
-    }
-
-    // Logout function
-    function logout() {
-      if (confirm('Yakin ingin logout?')) {
-        alert('Logout berhasil!');
-        // Implement actual logout logic here
-      }
     }
 
     // Status button functionality

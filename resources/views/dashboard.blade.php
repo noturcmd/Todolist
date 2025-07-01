@@ -524,7 +524,7 @@
             <ul>
                 <li><a href="/">📋 Dashboard</a></li>
                 <li><a href="/todolist/create">➕ Tambah Tugas</a></li>
-                <li><a href="#">📊 Statistik</a></li>
+                <li><a href="/statistic">📊 Statistik</a></li>
                 <li><a href="/profile">👤 Profil</a></li>
                 <li>
                     <button onclick="confirmLogout()">🚪 Logout</button>
@@ -662,7 +662,8 @@
                     <div class="task {{ $task->status === 'Done' ? 'task-done' : ($task->status === 'Late' ? 'task-late' : 'task-todo') }}">
                         <h3>{{ $task->task }}</h3>
                         <p>{{ $task->description }}</p>
-                        <p>Deadline: {{ $task->deadline }}</p>
+                        <p>Deadline: {{ \Carbon\Carbon::parse($task->deadline)->translatedFormat('l, d F Y') }}</p>
+
 
                         <div class="status-buttons">
                             <form style="display: inline;">

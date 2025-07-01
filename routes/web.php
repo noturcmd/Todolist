@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TodolistController;
+use App\Http\Controllers\TaskController;
 
 // Route untuk halaman utama (membawa ke dashboard)
 Route::get('/', [TodolistController::class, 'index'])->name('dashboard');
@@ -23,7 +24,7 @@ Route::middleware(['check.user_email'])->group(function () {
     // Route untuk dashboard dan semua fitur yang memerlukan login
     Route::get('/dashboard', [TodolistController::class, 'index'])->name('dashboard');
     Route::get('/profile', [UserController::class, 'showProfile'])->name('profile');
-    Route::post('/profile/update', [UserController::class, 'update'])->name('profile.update');
+    Route::put('/profile/update', [UserController::class, 'update'])->name('profile.update');
 
     // Routes untuk Todo List
     Route::get('/todolist/create', [TodolistController::class, 'create'])->name('todolist.create');
@@ -34,3 +35,6 @@ Route::middleware(['check.user_email'])->group(function () {
     Route::delete('/todolist/{id}', [TodolistController::class, 'destroy'])->name('todolist.destroy');
     Route::patch('/todolist/{id}/status', [TodolistController::class, 'updateStatus'])->name('todolist.updateStatus');
 });
+
+Route::get('/statistic', [App\Http\Controllers\StatisticController::class, 'index']);
+

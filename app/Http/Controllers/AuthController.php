@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -16,14 +16,22 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
+        $credentials = $request->only('email', 'password');
+
         if (Auth::attempt($credentials)) {
+            // Simpan email ke sesi (opsional)
             $request->session()->put("user", $request->input("email"));
-            return redirect()->intended('/dashboard'); // Ubah sesuai halaman setelah login
+
+            // Buat cookie: nama = user_email, isi = email login, durasi = 60 menit
+            $cookie = cookie('user_email', $request->input('email'), 60);
+
+            // Redirect ke dashboard dengan cookie
+            return redirect()->intended('/dashboard')->withCookie($cookie);
         }
 
         return back()->withErrors([
@@ -39,9 +47,9 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed'
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users|max:255',
+            'password' => 'required|min:8|confirmed'
         ]);
 
         $user = User::create([
@@ -51,10 +59,16 @@ class AuthController extends Controller
         ]);
 
         return redirect()->route('login.form')->with('success', 'Registrasi berhasil! Silakan login.');
+    }
 
-        // Auth::login($user);
+    public function dashboard(Request $request)
+    {
+        // Cek apakah ada cookie user_email
+        if (!$request->cookie('user_email')) {
+            return redirect('/login')->with('error', 'Sesi tidak ditemukan. Silakan login kembali.');
+        }
 
-        // return redirect('/dashboard');
+        return view('dashboard'); // Ganti dengan view dashboard kamu
     }
 
     public function logout(Request $request)
@@ -62,6 +76,10 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+
+        // Hapus cookie dengan membuat cookie bernama sama dan waktu kadaluarsa 0
+        $forgetCookie = cookie()->forget('user_email');
+
+        return redirect('/login')->withCookie($forgetCookie);
     }
 }

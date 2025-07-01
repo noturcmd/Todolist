@@ -5,7 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TodolistController;
 
-// Halaman awal
 Route::get('/', function () {
     return view('dashboard');
 });
@@ -19,24 +18,18 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Semua route yang butuh login
+// Semua route yang butuh login dan cookie
 Route::middleware(['auth'])->group(function () {
-
-    // Dashboard
     Route::get('/dashboard', [TodolistController::class, 'index'])->name('dashboard');
 
-    // Profil
     Route::get('/profile', [UserController::class, 'showProfile'])->name('profile');
     Route::post('/profile/update', [UserController::class, 'update'])->name('profile.update');
 
-    // Todolist
     Route::get('/todolist/create', [TodolistController::class, 'create'])->name('todolist.create');
     Route::post('/todolist/store', [TodolistController::class, 'store'])->name('todolist.store');
     Route::get('/todolist/{id}', [TodolistController::class, 'show'])->name('todolist.show');
     Route::get('/todolist/{id}/edit', [TodolistController::class, 'edit'])->name('todolist.edit');
     Route::put('/todolist/{id}', [TodolistController::class, 'update'])->name('todolist.update');
     Route::delete('/todolist/{id}', [TodolistController::class, 'destroy'])->name('todolist.destroy');
-
     Route::patch('/todolist/{id}/status', [TodolistController::class, 'updateStatus'])->name('todolist.updateStatus');
-
 });

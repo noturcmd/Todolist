@@ -62,6 +62,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        // $user->assignRole('user');  // default role
+
         return redirect()->route('login.form')->with('success', 'Registrasi berhasil! Silakan login.');
     }
 

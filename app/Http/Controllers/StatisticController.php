@@ -9,6 +9,10 @@ class StatisticController extends Controller
 {
     public function index(Request $request)
     {
+        if (!request()->cookie('user_email')) {
+            return redirect('/login')->with('error', 'Sesi tidak ditemukan. Silakan login kembali.');
+        }
+        
         $status = $request->query('status');
         $date   = $request->query('date');
 

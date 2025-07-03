@@ -12,11 +12,13 @@ class StatisticController extends Controller
         if (!request()->cookie('user_email')) {
             return redirect('/login')->with('error', 'Sesi tidak ditemukan. Silakan login kembali.');
         }
-        
+
+        $userId = auth()->id(); // ← ambil ID user yang sedang login
+
         $status = $request->query('status');
         $date   = $request->query('date');
 
-        $query = TodolistModel::query();
+        $query = TodolistModel::where('user_id', $userId); // ← filter berdasarkan user_id
 
         if ($status && $status != 'all') {
             $query->where('status', $status);
@@ -28,12 +30,13 @@ class StatisticController extends Controller
 
         $tasks = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        // data chart
-        $countDone    = TodolistModel::where('status', 'Done')->count();
-        $countNotDone = TodolistModel::where('status', 'Not Done')->count();
-        $countLate    = TodolistModel::where('status', 'Late')->count();
+        // data chart hanya untuk user ini juga
+        $countDone    = TodolistModel::where('user_id', $userId)->where('status', 'Done')->count();
+        $countNotDone = TodolistModel::where('user_id', $userId)->where('status', 'Not Done')->count();
+        $countLate    = TodolistModel::where('user_id', $userId)->where('status', 'Late')->count();
 
         return view('statistics_page', compact('tasks', 'countDone', 'countNotDone', 'countLate'));
     }
+
 }
 

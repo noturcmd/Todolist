@@ -21,8 +21,7 @@ class TodolistController extends Controller
         }
 
         // Query untuk mendapatkan tugas yang dibuat hari ini oleh user yang sedang login
-        $query = TodolistModel::where('user_id', Auth::id())
-            ->whereDate('created_at', today());  // Hanya tugas yang dibuat hari ini
+        $query = TodolistModel::where('user_id', Auth::id());
 
         // Filter berdasarkan status jika ada
         if ($request->has('status') && $request->status != 'all') {
@@ -65,9 +64,17 @@ class TodolistController extends Controller
         $tasks = $query->get();
 
         // Hitung jumlah tugas berdasarkan status
-        $countNotDone = TodolistModel::where('user_id', Auth::id())->where('status', 'Not Done')->whereDate('created_at', today())->count();
-        $countDone = TodolistModel::where('user_id', Auth::id())->where('status', 'Done')->whereDate('created_at', today())->count();
-        $countLate = TodolistModel::where('user_id', Auth::id())->where('status', 'Late')->whereDate('created_at', today())->count();
+        $countNotDone = TodolistModel::where('user_id', Auth::id())
+            ->where('status', 'Not Done')
+            ->count();
+
+        $countDone = TodolistModel::where('user_id', Auth::id())
+            ->where('status', 'Done')
+            ->count();
+
+        $countLate = TodolistModel::where('user_id', Auth::id())
+            ->where('status', 'Late')
+            ->count();
 
         // Kirim data tugas ke view
         $userName = Auth::user()->name;  // Get the authenticated user's name

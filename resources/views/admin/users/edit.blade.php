@@ -383,6 +383,12 @@
                 <label for="password_confirmation">Konfirmasi Password</label>
                 <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password baru">
 
+                <label for="role">Peran</label>
+                <select id="role" name="role" required>
+                    <option value="admin" {{ old('role', $user->getRoleNames()->first()) === 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="user" {{ old('role', $user->getRoleNames()->first()) === 'user' ? 'selected' : '' }}>User</option>
+                </select>
+
                 <div class="buttons">
                     <button type="submit">💾 Simpan Perubahan</button>
                     <a href="{{ route('admin.users.index') }}" class="cancel-btn">❌ Batal</a>

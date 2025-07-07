@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Models\LogActivity;
 
 
 class UserController extends Controller
@@ -48,6 +49,11 @@ class UserController extends Controller
         // Log perubahan yang berhasil disimpan
         Log::info('User profile updated:', ['user' => $user]);
 
+        LogActivity::create([
+            'user_id' => $user->id,
+            'activity' => 'Memperbarui profil',
+        ]);
+        
         // Redirect kembali ke halaman profil dengan pesan sukses
         return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui!');
     }

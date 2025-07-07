@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TodolistModel;
 use Illuminate\Support\Facades\Auth;
+use App\Models\LogActivity;
 
 class TodolistController extends Controller
 {
@@ -16,9 +17,14 @@ class TodolistController extends Controller
     // Menampilkan semua tugas di dashboard
     public function index(Request $request)
     {
-        if (!request()->cookie('user_email')) {
-            return redirect('/login')->with('error', 'Sesi tidak ditemukan. Silakan login kembali.');
+        if (!Auth::check()) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
+
+        LogActivity::create([
+            'user_id' => Auth::id(),
+            'activity' => 'Mengakses halaman dashboard/todolist',
+        ]);
 
         // Query untuk mendapatkan tugas yang dibuat hari ini oleh user yang sedang login
         $query = TodolistModel::where('user_id', Auth::id());
@@ -85,6 +91,11 @@ class TodolistController extends Controller
     // Menampilkan form tambah tugas
     public function create()
     {
+        LogActivity::create([
+            'user_id' => Auth::id(),
+            'activity' => 'Mengakses form tambah tugas',
+        ]);
+
         return view('todolist_form'); // Gabung untuk tambah/edit
     }
 
@@ -106,6 +117,11 @@ class TodolistController extends Controller
             'status' => $request->status,
         ]);
 
+        LogActivity::create([
+            'user_id' => Auth::id(),
+            'activity' => 'Menambahkan tugas baru: ' . $request->task,
+        ]);
+
         return redirect()->route('dashboard')->with('success', 'Tugas berhasil ditambahkan!');
     }
 
@@ -113,6 +129,12 @@ class TodolistController extends Controller
     public function show($id)
     {
         $task = TodolistModel::findOrFail($id);
+
+        LogActivity::create([
+            'user_id' => Auth::id(),
+            'activity' => 'Melihat detail tugas: ' . $task->task,
+        ]);
+
         return view('todolist_form', ['task' => $task, 'readonly' => true]);
     }
 
@@ -120,6 +142,12 @@ class TodolistController extends Controller
     public function edit($id)
     {
         $task = TodolistModel::findOrFail($id);
+
+        LogActivity::create([
+            'user_id' => Auth::id(),
+            'activity' => 'Mengakses form edit tugas: ' . $task->task,
+        ]);
+
         return view('todolist_form', compact('task'));
     }
 
@@ -136,6 +164,11 @@ class TodolistController extends Controller
         $task = TodolistModel::findOrFail($id);
         $task->update($request->all());
 
+        LogActivity::create([
+            'user_id' => Auth::id(),
+            'activity' => 'Memperbarui tugas: ' . $task->task,
+        ]);
+
         return redirect()->route('dashboard')->with('success', 'Tugas berhasil diperbarui!');
     }
 
@@ -143,7 +176,13 @@ class TodolistController extends Controller
     public function destroy($id)
     {
         $task = TodolistModel::findOrFail($id);
+        $taskTitle = $task->task;
         $task->delete();
+
+        LogActivity::create([
+            'user_id' => Auth::id(),
+            'activity' => 'Menghapus tugas: ' . $taskTitle,
+        ]);
 
         return redirect()->route('dashboard')->with('success', 'Tugas berhasil dihapus!');
     }
@@ -155,8 +194,14 @@ class TodolistController extends Controller
         ]);
 
         $task = TodolistModel::findOrFail($id);
+        $oldStatus = $task->status;
         $task->status = $request->status;
         $task->save();
+
+        LogActivity::create([
+            'user_id' => Auth::id(),
+            'activity' => 'Mengubah status tugas "' . $task->task . '" dari ' . $oldStatus . ' menjadi ' . $request->status,
+        ]);
 
         return redirect()->back()->with('success', 'Status tugas berhasil diperbarui!');
     }

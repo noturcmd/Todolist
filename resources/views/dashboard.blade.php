@@ -526,6 +526,10 @@
                 <li><a href="/todolist/create">➕ Tambah Tugas</a></li>
                 <li><a href="/statistic">📊 Statistik</a></li>
                 <li><a href="/profile">👤 Profil</a></li>
+                @if(Auth::check() && Auth::user()->hasRole('admin'))
+                    <li><a href="/admin/users">👥 Kelola Pengguna</a></li>
+                    <li><a href="/admin/logs">🗂 Log Aktivitas</a></li>
+                @endif
                 <li>
                     <button onclick="confirmLogout()">🚪 Logout</button>
                 </li>

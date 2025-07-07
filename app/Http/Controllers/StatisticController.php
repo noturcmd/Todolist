@@ -4,16 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TodolistModel;
+use Illuminate\Support\Facades\Auth;
+use App\Models\LogActivity;
 
 class StatisticController extends Controller
 {
     public function index(Request $request)
     {
-        if (!request()->cookie('user_email')) {
-            return redirect('/login')->with('error', 'Sesi tidak ditemukan. Silakan login kembali.');
+        if (!Auth::check()) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
         $userId = auth()->id(); // ← ambil ID user yang sedang login
+
+        LogActivity::create([
+            'user_id' => $userId,
+            'activity' => 'Melihat halaman statistik to-do list',
+        ]);
 
         $status = $request->query('status');
         $date   = $request->query('date');

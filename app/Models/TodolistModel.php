@@ -18,4 +18,9 @@ class TodolistModel extends Model
         'status',
         'deadline',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }

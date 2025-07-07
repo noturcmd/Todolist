@@ -541,10 +541,11 @@
     }
 
     // Logout function
-    function logout() {
-        if (confirm('Yakin ingin logout?')) {
-            alert('Logout berhasil!');
-            // Implement actual logout logic here
+    function confirmLogout() {
+        const result = confirm('Apakah Anda yakin ingin logout?');
+        if (result) {
+            // Redirect to logout URL
+            window.location.href = '/logout';
         }
     }
 </script>

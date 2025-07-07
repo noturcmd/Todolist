@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Pengguna</title>
+    <title>Edit Pengguna</title>
     <style>
         * {
             margin: 0;
@@ -243,6 +243,17 @@
         .cancel-btn {
             background: #6c757d;
             color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .cancel-btn:hover {
@@ -339,7 +350,7 @@
     <!-- Main content -->
     <main class="main-content" id="mainContent">
         <div class="profile-container">
-            <h1>👤 Profil Pengguna</h1>
+            <h1>👤 Edit Pengguna</h1>
 
             <!-- Success Message -->
             @if(session('success'))
@@ -351,33 +362,20 @@
             <!-- Error Messages -->
             <div class="error" style="display: none;" id="errorMessage">
                 <ul>
-                    <li>Terjadi kesalahan saat memperbarui profil</li>
+                    <li>Terjadi kesalahan saat memperbarui user</li>
                 </ul>
             </div>
 
             <!-- Profile Information -->
-            <div class="info">
-                <strong>Nama:</strong> {{ Auth::user()->name }}
-            </div>
-            <div class="info">
-                <strong>Email:</strong> {{ Auth::user()->email }}
-            </div>
-
-            <div class="buttons">
-                <button onclick="toggleEdit()">✏️ Edit Profil</button>
-                <a href="/dashboard" class="button">⬅️ Kembali ke Dashboard</a>
-            </div>
-
-            <!-- Edit Form (hidden initially) -->
-            <form method="POST" action="{{ route('profile.update') }}" class="edit-form" id="editForm">
+            <form method="POST" action="{{ route('admin.users.update', $user->id) }}" class="edit-form" style="display:block">
                 @csrf
-                @method('PUT') <!-- Pastikan metode adalah PUT -->
+                @method('PUT')
 
                 <label for="name">Nama Lengkap</label>
-                <input type="text" id="name" name="name" value="{{ Auth::user()->name }}" required>
+                <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required>
 
                 <label for="email">Alamat Email</label>
-                <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" required>
+                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required>
 
                 <label for="password">Password Baru (opsional)</label>
                 <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
@@ -387,14 +385,9 @@
 
                 <div class="buttons">
                     <button type="submit">💾 Simpan Perubahan</button>
-                    <button type="submit" class="cancel-btn">❌ Batal</button>
+                    <a href="{{ route('admin.users.index') }}" class="cancel-btn">❌ Batal</a>
                 </div>
             </form>
-
-
-
-
-
         </div>
     </main>
 </div>

@@ -3,9 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Pengguna</title>
+    <title>Log Aktivitas</title>
     <style>
-        * {
+        .log-container {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .log-container h1 {
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .log-search {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .log-search input {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            width: 250px;
+        }
+
+        .log-search button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .log-search button:hover {
+            background: #0056b3;
+        }
+
+        .log-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .log-table th, .log-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .log-table th {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .log-table tr:hover {
+            background: #f1f1f1;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+      * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -243,6 +312,17 @@
         .cancel-btn {
             background: #6c757d;
             color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .cancel-btn:hover {
@@ -306,13 +386,18 @@
                 display: none;
             }
         }
+
+        .pagination svg {
+    width: 16px;
+    height: 16px;
+}
+
+
     </style>
-</head>
-<body>
-<!-- Burger Menu Button -->
-<button class="burger-btn" onclick="toggleSidebar()">
-    <span id="burger-icon">☰</span>
-</button>
+    <!-- Burger Menu Button -->
+    <button class="burger-btn" onclick="toggleSidebar()">
+        <span id="burger-icon">☰</span>
+    </button>
 
 <!-- Sidebar Overlay for Mobile -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -338,64 +423,59 @@
 
     <!-- Main content -->
     <main class="main-content" id="mainContent">
-        <div class="profile-container">
-            <h1>👤 Profil Pengguna</h1>
-
-            <!-- Success Message -->
-            @if(session('success'))
-                <div class="success-message" style="display: block;" id="successMessage">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <!-- Error Messages -->
-            <div class="error" style="display: none;" id="errorMessage">
-                <ul>
-                    <li>Terjadi kesalahan saat memperbarui profil</li>
-                </ul>
-            </div>
-
-            <!-- Profile Information -->
-            <div class="info">
-                <strong>Nama:</strong> {{ Auth::user()->name }}
-            </div>
-            <div class="info">
-                <strong>Email:</strong> {{ Auth::user()->email }}
-            </div>
-
-            <div class="buttons">
-                <button onclick="toggleEdit()">✏️ Edit Profil</button>
-                <a href="/dashboard" class="button">⬅️ Kembali ke Dashboard</a>
-            </div>
-
-            <!-- Edit Form (hidden initially) -->
-            <form method="POST" action="{{ route('profile.update') }}" class="edit-form" id="editForm">
-                @csrf
-                @method('PUT') <!-- Pastikan metode adalah PUT -->
-
-                <label for="name">Nama Lengkap</label>
-                <input type="text" id="name" name="name" value="{{ Auth::user()->name }}" required>
-
-                <label for="email">Alamat Email</label>
-                <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" required>
-
-                <label for="password">Password Baru (opsional)</label>
-                <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
-
-                <label for="password_confirmation">Konfirmasi Password</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password baru">
-
-                <div class="buttons">
-                    <button type="submit">💾 Simpan Perubahan</button>
-                    <button type="submit" class="cancel-btn">❌ Batal</button>
-                </div>
-            </form>
-
-
-
-
-
+       
+<div class="log-container">
+    <h1>🗂 Log Aktivitas</h1>
+    <!-- Success Message -->
+    @if(session('success'))
+        <div class="success-message" style="display: block;" id="successMessage">
+            {{ session('success') }}
         </div>
+    @endif
+
+    <!-- Error Messages -->
+    <div class="error" style="display: none;" id="errorMessage">
+        <ul>
+            <li>Terjadi kesalahan saat memperbarui profil</li>
+        </ul>
+    </div>
+    <div class="log-search">
+        <form method="GET" action="{{ route('admin.logs.index') }}">
+            <input type="text" name="search" placeholder="Cari aktivitas..." value="{{ request('search') }}">
+            <button type="submit">🔍 Cari</button>
+        </form>
+    </div>
+
+    <div class="log-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>🧑 Pengguna</th>
+                    <th>🕒 Waktu</th>
+                    <th>📄 Aktivitas</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($logs as $log)
+                <tr>
+                    <td>{{ $log->user->name ?? 'System' }}</td>
+                    <td>{{ $log->created_at->format('d M Y H:i') }}</td>
+                    <td>{{ $log->activity }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="3">Tidak ada log aktivitas ditemukan.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {{ $logs->links() }}
+    </div>
+</div>
+
     </main>
 </div>
 

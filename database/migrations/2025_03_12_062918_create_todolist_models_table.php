@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('todolist_models', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string("task");
             $table->string("description");
             $table->enum("status", ["Not Done", "Late", "Done"])->default("Not Done");

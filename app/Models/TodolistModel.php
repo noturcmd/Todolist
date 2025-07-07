@@ -9,6 +9,18 @@ class TodolistModel extends Model
 {
     use HasFactory;
 
-    protected $table = "todolist_models";
-    protected $fillable = ["task", "description", "status", "deadline"];
+    protected $table = 'todolist_models';
+
+    protected $fillable = [
+        'user_id',
+        'task',
+        'description',
+        'status',
+        'deadline',
+    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }
